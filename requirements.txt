@@ -1,0 +1,17 @@
+fastapi
+uvicorn
+streamlit
+requests
+python-jose
+passlib
+python-multipart
+pydantic
+transformers
+torch
+pandas
+scikit-learn
+python-dotenv
+bcrypt
+matplotlib
+joblib
+nltk
