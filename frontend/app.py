@@ -1,12 +1,12 @@
 import sys
 import os
-
-from frontend import login
+import streamlit as st
 
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
 
-import streamlit as st
+from frontend import login
+from frontend.pages import dashboard
 
 st.set_page_config(page_title="ICFA", page_icon="📊", layout="wide")
 
@@ -25,7 +25,6 @@ if "username" not in st.session_state:
 if "token" not in st.session_state:
     st.session_state.token = ""
 
-from frontend.pages import dashboard
 
 if not st.session_state.logged_in:
     login.show()
