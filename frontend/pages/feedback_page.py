@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 
 API_URL = "http://127.0.0.1:8000"
 
-
 def show():
     st.title("💬 Sentiment Analysis")
     st.markdown(
@@ -32,12 +31,15 @@ def show():
                         timeout=120
                     )
                 if response.status_code == 200:
-                    show_results(response.json())
+                    st.session_state.analysis_results = response.json()
                 else:
                     st.error(f"API Error: {response.text}")
             except requests.exceptions.ConnectionError:
                 st.warning("⚠️ Backend not running. Showing mock results for UI demo.")
-                show_results(mock_result())
+                st.session_state.analysis_results = mock_result()
+
+    if 'analysis_results' in st.session_state:
+        show_results(st.session_state.analysis_results)
 
 
 def show_results(data):
@@ -55,9 +57,9 @@ def show_results(data):
         st.subheader("Sentiment Split")
         labels, sizes, colors = [], [], []
         for label, count, color in [
-            ("Positive", data["positive"], "#4CAF50"),
-            ("Negative", data["negative"], "#F44336"),
-            ("Neutral",  data["neutral"],  "#9E9E9E"),
+            ("Positive", data["positive"], "#31F738"),
+            ("Negative", data["negative"], "#D82114"),
+            ("Neutral",  data["neutral"],  "#8C7777"),
         ]:
             if count > 0:
                 labels.append(label)
@@ -75,7 +77,32 @@ def show_results(data):
 
     st.divider()
     st.subheader("All Review Results")
-    st.dataframe(pd.DataFrame(data["results"]), use_container_width=True)
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        sentiment_filter = st.selectbox(
+            "Filter by sentiment",
+            ["All", "Positive", "Negative", "Neutral"],
+            key="sentiment_filter"
+        )
+    
+    with col2:
+        sort_order = st.selectbox(
+            "Sort by sentiment score",
+            ["Descending (High to Low)", "Ascending (Low to High)"],
+            key="sort_order"
+        )
+    
+    results_df = pd.DataFrame(data["results"])
+    
+    if sentiment_filter != "All":
+        results_df = results_df[results_df["label"] == sentiment_filter.upper()]
+    
+    ascending = sort_order == "Ascending (Low to High)"
+    results_df = results_df.sort_values("score", ascending=ascending)
+    
+    st.dataframe(results_df, use_container_width=True)
 
 
 def mock_result():

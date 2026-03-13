@@ -58,8 +58,8 @@ def show_churn_results(data):
 
     def color_churn(row):
         if row["churn_prediction"] == "Yes":
-            return ["background-color: #ffcccc"] * len(row)
-        return ["background-color: #ccffcc"] * len(row)
+            return ["background-color: #ff2c00"] * len(row)
+        return ["background-color: #00de03"] * len(row)
 
     st.dataframe(df.style.apply(color_churn, axis=1), use_container_width=True)
 

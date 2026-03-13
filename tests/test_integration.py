@@ -5,7 +5,6 @@ client = TestClient(app)
 
 def test_full_workflow():
 
-    # Step 1: Login
     login_response = client.post(
         "/auth/login",
         json={
@@ -18,7 +17,6 @@ def test_full_workflow():
 
     token = login_response.json()["access_token"]
 
-    # Step 2: Upload feedback CSV
     csv_content = """feedback
 Great service
 Bad delivery
@@ -31,7 +29,6 @@ Customer support was helpful
         headers={"Authorization": f"Bearer {token}"}
     )
 
-    # Step 3: Validate response
     assert response.status_code == 200
     data = response.json()
 
